@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.product-grid.edit
+.form-control{
+  padding:3px 5px;
+  font-size:14px;
+}
