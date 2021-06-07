@@ -108,7 +108,7 @@ export default function ProductPage(props) {
               value={new_category_added ? "" : new_category_name}
             />
             <button
-              className={`btn bg-green-light`}
+              className={`btn bg-green-dark`}
               disabled={new_category_name === ""}
               onClick={() => {
                 addCategory();
@@ -139,7 +139,7 @@ export default function ProductPage(props) {
                 className="mr-1 my-1 d-inline-block"
                 key={`categories_top_${i}`}
               >
-                <button className="btn bg-green-light category-tag">
+                <button className="btn bg-green-dark category-tag">
                   {elt.data().name}
                 </button>
                 <button
@@ -187,7 +187,7 @@ export default function ProductPage(props) {
             style={{ maxWidth: "100%", overflowX: "auto" }}
           >
             <button
-              className={`btn bg-green-light mr-1 ${
+              className={`btn bg-green-dark mr-1 ${
                 selected_set === "All" && `bg-green-dark text-light`
               }`}
               onClick={() => {
@@ -199,7 +199,7 @@ export default function ProductPage(props) {
             {categories.map((elt, i) => (
               <button
                 key={`categories_buttons_${i}`}
-                className={`btn bg-green-light mr-1 ${
+                className={`btn bg-green-dark mr-1 ${
                   selected_set === elt.data().name && "bg-green-dark text-light"
                 }`}
                 onClick={() => {

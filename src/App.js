@@ -5,6 +5,7 @@ import "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
+import { firestore } from "firebase-admin";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import ChatPage from "./pages/chat/page";
 import Blog from "./pages/blog/page";
@@ -12,9 +13,11 @@ import Dashboard from "./pages/dashboard";
 import ProductPage from "./pages/products/page";
 import AppointmentPage from "./pages/appointments/page";
 import Login from "./pages/login";
-import React, { useState, useEffect } from "react";
-import { firestore } from "firebase-admin";
-
+import MyCustomers from "./pages/my-customers/page";
+import React, { useState, useEffect, createContext } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import OrderPage from "./pages/orders/page";
+import EmailForm from "./pages/orders/email_form";
 const firebaseConfig = {
   apiKey: "AIzaSyB9ZE0l4S6AlG0N4u5kWBU7kq_Sa-RexgQ",
   authDomain: "salocin.firebaseapp.com",
@@ -23,6 +26,15 @@ const firebaseConfig = {
   messagingSenderId: "2655309097",
   appId: "1:2655309097:web:5e1556371137495176bb38",
 };
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAM8L4Cig_StX5_CWJ69ckBkUeOvZjbIaY",
+//   authDomain: "animal-hospital-3ff55.firebaseapp.com",
+//   projectId: "animal-hospital-3ff55",
+//   storageBucket: "animal-hospital-3ff55.appspot.com",
+//   messagingSenderId: "1034135343374",
+//   appId: "1:1034135343374:web:7241be56f08f475a14475f",
+//   measurementId: "G-SCF747GVCT",
+// };
 
 firebase.initializeApp(firebaseConfig);
 const functions = require("firebase-functions");
@@ -32,7 +44,36 @@ function App() {
   const [user, setUser] = useState(null);
   const [sidebar_active, set_active] = useState(false);
   const [active_page, set_active_page] = useState("dashboard");
-  localStorage.setItem("password", "123123123");
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection("messages")
+      .onSnapshot((response) => {
+        let tmp = new Array();
+        response.forEach((doc) => {
+          let observer = firebase
+            .firestore()
+            .collection("messages")
+            .doc(doc.id)
+            .onSnapshot(
+              (docSnapshot) => {
+                let lastMessage =
+                  docSnapshot.data().data[docSnapshot.data().data.length - 1];
+                toast(
+                  `new message from ${docSnapshot.data().fromEmail} : ${
+                    lastMessage.content
+                  }`
+                );
+                // ...
+              },
+              (err) => {
+                alert(`Encountered error: ${err}`);
+              }
+            );
+        });
+      });
+  }, []);
   return user ? (
     <React.Fragment>
       <Router>
@@ -117,15 +158,30 @@ function App() {
                   </Link>
                 </li>
                 <li
-                  className={`${active_page === "login" ? "active" : ""}`}
+                  className={`${
+                    active_page === "my-customers" ? "active" : ""
+                  }`}
                   onClick={() => {
-                    set_active_page("login");
+                    set_active_page("my-customers");
                   }}
                 >
-                  <Link to="/login">
+                  <Link to="/my-customers">
                     <div className="d-flex">
-                      Login
-                      <i className="fa fa-weixin"></i>
+                      My Customers
+                      <i className="fa fa-users"></i>
+                    </div>
+                  </Link>
+                </li>
+                <li
+                  className={`${active_page === "orders" ? "active" : ""}`}
+                  onClick={() => {
+                    set_active_page("orders");
+                  }}
+                >
+                  <Link to="/orders">
+                    <div className="d-flex">
+                      Orders
+                      <i className="fa fa-truck"></i>
                     </div>
                   </Link>
                 </li>
@@ -169,10 +225,20 @@ function App() {
               <Route path="/chat" component={ChatPage}>
                 <ChatPage funtions={functions} firebase={firebase} />
               </Route>
+              <Route path="/my-customers" component={MyCustomers}>
+                <MyCustomers funtions={functions} firebase={firebase} />
+              </Route>
+              <Route path="/orders" component={OrderPage}>
+                <OrderPage funtions={functions} firebase={firebase} />
+              </Route>
+              <Route path="/email-form" component={EmailForm}>
+                <EmailForm functions={functions} firebase={firebase} />
+              </Route>
             </Switch>
           </div>
         </div>
       </Router>
+      <ToastContainer />
     </React.Fragment>
   ) : (
     <Login

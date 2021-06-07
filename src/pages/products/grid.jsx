@@ -1,3 +1,5 @@
+import { firestore } from "firebase-functions";
+
 import React, { useState, useEffect } from "react";
 export default function ProductGrid(props) {
   const [category, setCategory] = useState("UNCATEGORISED");
@@ -122,7 +124,14 @@ export default function ProductGrid(props) {
                         }}
                       >
                         {props.categories.map((cat) => (
-                          <option value={cat.id}>{cat.data().name}</option>
+                          <option
+                            value={props.firestore
+                              .collection("categories")
+                              .doc(`${cat.id}`)
+                              .ref()}
+                          >
+                            {cat.data().name}
+                          </option>
                         ))}
                       </select>
                     </small>

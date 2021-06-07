@@ -1,8 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;1,200&display=swap");
 
 :root {
-  --green-lighter: #7ce495;
+  --green-lighter: #55c595;
   --green-darker: #55c595;
+}
+.bg-green-dark *,
+.bg-green-dark {
+  color:white !important; 
+}
+.bg-green-light *,
+.bg-green-light{
+  color:white !important;
 }
 * {
   outline-color: var(--green-lighter) !important;
@@ -14,7 +22,15 @@ html,
 body {
   font-family: "Montserrat";
 }
-
+.jumbotron *{
+  color:white;
+}
+.d-flex h3{
+  color:var(--green-darker);
+}
+h1,h2,h3,h4,h5,h6{
+  font-weight:bold !important;
+}
 /*
   GENERAL AND CUSTOM CLASSES
 */
@@ -211,18 +227,24 @@ STANDARD UNIVERSAL LOADER
 .lds-ring {
   display: inline-block;
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  margin-top:-5px;
+  height: 20px;
+  transform:scale(0.5);
+  text-align: center;
+}
+.btn{
+  max-height:41px !important;
 }
 
 .lds-ring div {
   box-sizing: border-box;
   display: block;
   position: absolute;
-  width: 64px;
-  height: 64px;
+  width: 40px;
+  height: 40px;
   margin: 8px;
-  border: 8px solid #fff;
+  border: 3px solid #fff;
   border-radius: 50%;
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: var(--green-lighter) transparent transparent transparent;
@@ -255,7 +277,7 @@ STANDARD UNIVERSAL LOADER
 
 .product-grid-wrapper {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-gap: 15px;
   justify-content: center;
 }
@@ -509,4 +531,238 @@ STANDARD UNIVERSAL LOADER
 }
 .login-form input.form-control::placeholder{
   color:#141414;
+}
+.opacity-0{
+  opacity:0;
+}
+.opacity-1{
+  opacity:1;
+}
+.chatnav{
+  background:transparent;
+  width:100%;
+  padding:20px;
+  border-radius: 15px;
+  color:white;  
+  border:0.1px solid white;
+  transition:200ms;
+  margin-bottom:5px;
+}
+.chatnav *{
+  color :white !important;
+}
+.chatnav.active,
+.chatnav:hover{
+  cursor: pointer;
+  background:rgb(0, 0, 0, 0.1);
+
+}
+.chatpage{
+  margin:-20px -15px;
+  overflow-x:hidden;
+}
+.chatpage-wrapper .column{
+  height: 99vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding-bottom:70px;
+  padding-left:10px;
+  padding-right:10px;
+}
+.chatpage-wrapper .column::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  border:0;
+}
+
+.chatpage-wrapper .column::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.chatpage-wrapper .column::-webkit-scrollbar-thumb {
+  background-color: var(--green-darker);
+}
+
+.currentChat .email{
+  z-index:10;
+  position:absolute;
+  min-width:calc(100% + 30px);
+  margin-left:-15px;
+  padding:15px 10px;
+  font-size:25px;
+  font-weight: bold !important;
+  color:white;
+  color:var(--green-darker);
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 1px;
+}
+.currentChat .messagebox{
+  position:absolute !important;
+  bottom:0px;
+  padding:5px 2px;
+  width: 100%;
+}
+
+.currentChat .messagebox input{
+  width:90%;
+}
+.currentChat .messagebox button{
+  width:10%;
+}
+.message{
+  position:relative;
+  padding:5px 20px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  margin-top:10px;
+}
+.message.from-customer{
+  float:left;
+  color:white;
+  border-bottom-right-radius: 20px;
+  background: var(--green-lighter);
+}
+.message.from-admin {
+  float: right;
+  background:rgba(187, 187, 187, 0.603);
+  color: black;
+  border-bottom-left-radius: 20px;
+}
+
+.chat-messages{
+  transform:scale(0);
+  animation: chat-messages-popup 200ms forwards;
+}
+
+@media(max-width:767px){
+  .customer-info{
+    padding-bottom: 20px;
+  }
+  .customer-image-wrapper{
+    padding-right:0 !important;
+    padding-bottom:20px !important;
+  }
+  .customer-section .d-flex:first-child{
+    flex-direction: column !important;
+  }
+  .w-md-100{
+    width:100% !important;
+    padding:0 3px;
+  }
+}
+@keyframes chat-messages-popup{
+  from{
+    transform:scale(0);
+  }
+  to{
+    transform: scale(1);
+  }
+}
+.blog-grid{
+  padding:30px;
+  border-radius:20px;
+  margin:50px 0;
+  max-width:500px;
+  background-color: #eee;
+}
+.blog-caption{
+  font-size:18px;
+}
+.blogposts{
+  display:flex;
+  justify-content: center;
+}
+.blog-image img{
+  max-width:100%;
+  object-fit: cover;
+}
+.blog-posts .wrap{
+  width:max-content;
+}
+.blog-grid-inner > div:not(.blog-interactions-body){
+  padding-bottom:15px;
+  display:block;
+}
+.blog-interactions-body{
+  overflow:hidden !important;
+  background:white;
+  border-radius:15px;
+  padding:0;
+  max-height:0;
+  transition:max-height 500ms;
+}
+
+.blog-interactions-body .item{
+  padding:3px 0;
+}
+.blog-image img{
+  width:100% !important;
+}
+.blog-interactions-body.active{
+  overflow-y:auto;
+  max-height:440px;
+  transition:max-height 500ms;
+}
+.blog-grid-inner>div:first-child {
+  padding-top: 15px;
+}
+@media(max-width:767px){
+  .blog-grid{
+    padding:10px;
+  }
+  .blog-grid-inner>div:not(.blog-interactions-body){
+    padding-bottom:10px;
+  }
+  .blog-grid-inner>div:first-child {
+    padding-top: 10px;
+  }
+}
+.customer-grid{
+  padding:10px;
+  border-radius: 15px;
+  margin-bottom:20px;
+  background:#eee;
+}
+.animals-wrapper{
+  max-height:0;
+  overflow:hidden;
+  transition:500ms;
+  padding-left:30px;
+  padding-right:30px;
+  background:white;
+  border-radius:15px;
+}
+.animals-wrapper .p-2:first-child{
+  margin:15px 0;
+}
+.animals-wrapper.extended{
+  max-height:500px;
+  overflow-y:auto;
+}
+
+.animal-image img{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  object-fit: cover;
+}
+.animal-info ul, .customer-info ul{
+  padding-left:0 ;
+  list-style: none;
+  margin:0;
+}
+.animal-grid{
+padding:10px 0;
+}
+.animal-grid:not(.animal-grid:last-child){
+  border-bottom:1px solid #141414;
+}
+.toggle-animals:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+.customer-image-wrapper img{
+  width:120px;
+  height:120px;
+  border-radius: 50%;
 }

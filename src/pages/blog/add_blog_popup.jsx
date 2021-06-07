@@ -1,41 +1,57 @@
 import { select } from "@syncfusion/ej2-schedule";
 import React, { useState, useEffect } from "react";
-
+import firebase from "firebase";
+import Loader from "./../../components/loader";
+require("firebase/app");
 export default function AddBlogPopup(props) {
+  const firebase = props.firebase;
+  const firestore = firebase.firestore();
+  const storage = firebase.app().storage("gs://salocin.appspot.com");
+  const ref = storage.ref();
   const [newPost, setNewPost] = useState({
     caption: "",
     media: [],
   });
   const [selectedPictures, setSelectedPictures] = useState([]);
   const [submitted, setSubmitted] = useState(false);
+  const [newPostLoading, setNewPostLoading] = useState(false);
+  const getCurrentTimeStamp = () => {
+    return new Date();
+  };
   const savenewPost = () => {
     for (let i in newPost) {
-      if (newPost[i] === "") return;
+      if (newPost[i] === "") {
+        setNewPostLoading(false);
+        return;
+      }
     }
     let cat = newPost.category;
-    props.firestore
-      .collection("newPosts")
+    let current_timestamp = getCurrentTimeStamp();
+    for (let i in selectedPictures) {
+      var tmp = firebase
+        .storage()
+        .ref(`${current_timestamp}/${selectedPictures[i].name}`);
+      newPost.media.push(`${current_timestamp}/${selectedPictures[i].name}`);
+      tmp.put(selectedPictures[i]);
+    }
+    firestore
+      .collection("blog_posts")
       .doc()
       .set({
-        ...newPost,
-        category: props.firestore.doc("categories/" + cat),
+        caption: newPost.caption,
+        media: newPost.media,
+      })
+      .then((ss) => {
+        setNewPostLoading(false);
+        props.setActive(false);
       });
-    props.setActive(false);
   };
   const renderSelectedPictures = () => {
-    // for (let i = 0; i < newPost.media.length; i++) {
-    //   <img
-    //     src={URL.createObjectURL(newPost.media[i])}
-    //     width={100}
-    //     style={{ flexGrow: "1", objectFit: "cover", borderRadius: "10px" }}
-    //     className="mx-1 h-100"
-    //   />;
-    // }
     let posts = [];
-    for (let i = 0; i < newPost.media.length; i++)
+    for (let i = 0; i < selectedPictures.length; i++)
       posts.push(
         <img
-          src={URL.createObjectURL(newPost.media[i])}
+          src={URL.createObjectURL(selectedPictures[i])}
           width={100}
           style={{
             flexGrow: "1",
@@ -89,7 +105,6 @@ export default function AddBlogPopup(props) {
                 for (let i = 0; i < e.target.files.length; i++)
                   tmp.push(e.target.files[i]);
                 setSelectedPictures(tmp);
-                setNewPost({ ...newPost, media: tmp });
               }}
             />
             <div className="d-flex justify-content-between align-items-center">
@@ -110,8 +125,7 @@ export default function AddBlogPopup(props) {
                     <button
                       className="position-absolute delete-image bg-transparent"
                       onClick={() => {
-                        console.log(newPost.media);
-                        let tmp = newPost.media;
+                        let tmp = selectedPictures;
                         tmp.splice(i, 1);
                         setNewPost({
                           ...newPost,
@@ -129,13 +143,14 @@ export default function AddBlogPopup(props) {
           </div>
           <div className="d-flex justify-content-around">
             <button
-              className="btn bg-green-light"
+              className="btn bg-green-dark"
               onClick={() => {
+                setNewPostLoading(true);
                 savenewPost();
                 setSubmitted(true);
               }}
             >
-              SAVE
+              {newPostLoading ? <Loader white={true} /> : "SAVE"}
             </button>
             <button
               className="btn bg-secondary text-light"

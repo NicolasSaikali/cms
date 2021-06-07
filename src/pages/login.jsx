@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 export default function Login(props) {
+  const [error, setError] = useState(null);
+
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -28,27 +30,36 @@ export default function Login(props) {
   // }, []);
 
   const Login = () => {
+    setError(null);
     props.auth
       .signInWithEmailAndPassword(credentials.email, credentials.password)
       .then((e) => {
-        console.log(e);
+        props.setUser(credentials);
       })
       .catch((error) => {
+        setError("Wrong credentials");
         console.error("Error signing in with password and email", error);
       });
   };
 
   return (
     <div className="login-page">
-      <img src="./assets/login_bg.jpg" alt="" class="login-bg" />
+      <img src="./assets/login_bg.jpg" alt="" className="login-bg" />
       <div className="overlay"></div>
       <div className="login-form">
         <div className="p-4">
           <div
-            className="w-100 py-4 text-center text-bold text-uppercase title"
+            className="w-100 py-2 text-center text-bold text-uppercase title"
             style={{ fontWeight: "600" }}
           >
             admin login
+          </div>
+          <div
+            className={`text-danger text-center py-1 ${
+              error !== null ? "opacity-1" : "opacity-0"
+            }`}
+          >
+            {error}
           </div>
           <input
             type="email"
@@ -72,7 +83,7 @@ export default function Login(props) {
           />
           <div className="w-100 py-2"></div>
           <button
-            className="btn bg-green-light w-100 text-uppercase text-light"
+            className="btn bg-green-dark w-100 text-uppercase text-light"
             onClick={() => {
               Login();
             }}

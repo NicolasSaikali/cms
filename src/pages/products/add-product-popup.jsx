@@ -69,7 +69,7 @@ export default function AppProductPopup(props) {
               Category
             </option>
             {props.categories.map((category) => (
-              <option defaultValue={category.id}>{category.data().name}</option>
+              <option value={category.id}>{category.data().name}</option>
             ))}
           </select>
           <input
@@ -101,7 +101,7 @@ export default function AppProductPopup(props) {
           ></textarea>
           <div className="d-flex justify-content-around">
             <button
-              className="btn bg-green-light"
+              className="btn bg-green-dark"
               onClick={() => {
                 saveProduct();
                 setSubmitted(true);
