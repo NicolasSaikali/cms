@@ -18,6 +18,9 @@
 .form-control:focus {
   border-color: var(--green-darker) !important;
 }
+html{
+  scroll-behavior: smooth;
+}
 html,
 body {
   font-family: "Montserrat";
@@ -765,4 +768,35 @@ padding:10px 0;
   width:120px;
   height:120px;
   border-radius: 50%;
+}
+.order-details{
+  border-radius:10px;
+  max-height:0;
+  transition:400ms;
+  overflow:hidden;
+}
+.order-details.expanded{
+  max-height:500px;
+}
+.errorPopup{
+  position:fixed;
+  bottom:50px;
+  right:50px;
+  padding:20px;
+  background:white;
+  box-shadow: 10px 10px 10px rgb(0,0,0,0.4);
+  animation: fade-out 10s forwards;
+  z-index:1000;
+}
+
+@keyframes fade-out{
+  0%{
+    opacity:1;
+  }
+  50%{
+    opacity:0;
+  }
+  100%{
+    display:none;
+  }
 }

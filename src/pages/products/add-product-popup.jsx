@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
+import firebase from "firebase";
+require("firebase/app");
+
 export default function AppProductPopup(props) {
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [errors, setErrors] = useState([]);
   const [product, setProduct] = useState({
     name: "",
     description: "",
     price: "",
+    images: [],
     category: "",
   });
   const [submitted, setSubmitted] = useState(false);
@@ -11,18 +17,63 @@ export default function AppProductPopup(props) {
     console.log(product);
   }, [product]);
 
+  const handleSelectedImages = (e) => {};
+
+  const getCurrentTimeStamp = () => {
+    return new Date();
+  };
+
+  const renderselectedImages = () => {
+    let posts = [];
+    for (let i = 0; i < selectedImages.length; i++)
+      posts.push(
+        <img
+          src={URL.createObjectURL(selectedImages[i])}
+          width={100}
+          style={{
+            flexGrow: "1",
+            objectFit: "cover",
+            borderRadius: "10px",
+            minHeight: "50px",
+          }}
+          className="mx-1 h-100"
+        />
+      );
+    return posts;
+  };
+
   const saveProduct = () => {
+    if (selectedImages.length === 0) {
+      return;
+    }
     for (let i in product) {
       if (product[i] === "") return;
     }
     let cat = product.category;
-    props.firestore
-      .collection("products")
-      .doc()
-      .set({
-        ...product,
-        category: props.firestore.doc("categories/" + cat),
-      });
+    let current_timestamp = "test";
+    for (let i in selectedImages) {
+      var tmp = firebase
+        .storage()
+        .ref(`${current_timestamp}/${selectedImages[i].name}`);
+      tmp.put(selectedImages[i]);
+      let tmpimagebuffer = product.images;
+      tmpimagebuffer.push(`${current_timestamp}/${selectedImages[i].name}`);
+      setProduct({ ...product, images: tmpimagebuffer });
+    }
+    firebase.firestore().collection("products").doc().set({
+      name: product.name,
+      price: product.price,
+      images: product.images,
+      description: product.description,
+      category: product.category,
+    });
+    setProduct({
+      name: "",
+      description: "",
+      price: "",
+      images: [],
+      category: "",
+    });
     props.setActive(false);
   };
   return (
@@ -85,6 +136,47 @@ export default function AppProductPopup(props) {
               setProduct({ ...product, price: e.target.value });
             }}
           />
+          <label htmlFor="images" className="mb-3 btn bg-green-dark text-light">
+            Browse Images
+          </label>
+          <div className="d-flex justify-content-between mb-3">
+            <input
+              type="file"
+              name="images"
+              id="images"
+              className="d-none"
+              accept="image/*"
+              multiple
+              onChange={(e) => {
+                let tmp = [];
+                for (let i = 0; i < e.target.files.length; i++)
+                  tmp.push(e.target.files[i]);
+                setSelectedImages(tmp);
+              }}
+            />
+            <div className="d-flex flex-wrap">
+              {renderselectedImages().map((elt, i) => (
+                <div
+                  key={`selected_pictures_${i}`}
+                  className="d-inline-block m-1 position-relative
+                    
+                  "
+                >
+                  <button
+                    className="position-absolute delete-image bg-transparent"
+                    onClick={() => {
+                      let tmp = selectedImages;
+                      tmp.splice(i, 1);
+                      setSelectedImages(tmp);
+                    }}
+                  >
+                    x
+                  </button>
+                  {elt}
+                </div>
+              ))}
+            </div>
+          </div>
           <textarea
             type="text"
             className={`form-control mb-3 ${
@@ -120,6 +212,9 @@ export default function AppProductPopup(props) {
           </div>
         </div>
       </div>
+      {errors.map((error) => {
+        <div className="errorPopup">{error.text}</div>;
+      })}
     </div>
   );
 }

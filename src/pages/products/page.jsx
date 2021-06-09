@@ -219,6 +219,7 @@ export default function ProductPage(props) {
                   no={i}
                   id={elt.id}
                   object={elt.data()}
+                  data={elt}
                   selected_set={selected_set}
                   is_being_edited={product_edit === elt.id}
                   set_product_edit={() => {
@@ -228,7 +229,7 @@ export default function ProductPage(props) {
                     set_product_edit(null);
                   }}
                   categories={categories}
-                  firestore={firestore}
+                  firebase={firebase}
                 />
               ))}
             </div>

@@ -1,20 +1,44 @@
-import { firestore } from "firebase-functions";
-
 import React, { useState, useEffect } from "react";
+require("firebase/app");
 export default function ProductGrid(props) {
+  const firebase = props.firebase;
+  const firestore = firebase.firestore();
   const [category, setCategory] = useState("UNCATEGORISED");
   const [currentObject, setCurrentObject] = useState(props.object);
+  const [imageURL, setImageURL] = useState("");
   useEffect(() => {
-    props.object.category.get().then((response) => {
-      if (response.data() === undefined) setCategory("UNCATEGORISED");
-      else setCategory(response.data().name);
-    });
+    if (props.data.data().images.length !== 0) {
+      firebase
+        .storage()
+        .ref("/" + props.data.data().images[0].split("/")[0])
+        .child(props.data.data().images[0].split("/")[1])
+        .getDownloadURL()
+        .then((url) => {
+          setImageURL(url);
+        });
+    }
+
+    let catID = props.object.category;
+    firestore
+      .collection("categories")
+      .doc(props.object.category)
+      .get()
+      .then((response) => {
+        if (response.empty) setCategory("UNCATEGORISED");
+        else setCategory(response.data().name);
+      });
   }, []);
   const edit = (id) => {
-    props.firestore.collection("products").doc(id).set(currentObject);
+    firestore.collection("products").doc(id).set({
+      name: currentObject.name,
+      description: currentObject.description,
+      price: currentObject.price,
+      category: currentObject.category,
+      images: currentObject.images,
+    });
   };
   const delete_product = (id) => {
-    props.firestore.collection("products").doc(id).delete();
+    firestore.collection("products").doc(id).delete();
   };
   const render_product = () => {
     if (!props.is_being_edited)
@@ -30,11 +54,7 @@ export default function ProductGrid(props) {
             className="position-absolute product-content"
             onMouseOut={() => props.cancel_edit()}
           >
-            <img
-              src="https://picsum.photos/300/300"
-              alt=""
-              className="product-image"
-            />
+            <img src={imageURL} alt="" className="product-image" />
             <div className="product-info">
               <div className="product-name">
                 <div className="d-flex justify-content-between align-items-center">
@@ -125,10 +145,13 @@ export default function ProductGrid(props) {
                       >
                         {props.categories.map((cat) => (
                           <option
-                            value={props.firestore
-                              .collection("categories")
-                              .doc(`${cat.id}`)
-                              .ref()}
+                            value={cat.id}
+                            onChange={(e) => {
+                              setCurrentObject({
+                                ...currentObject,
+                                category: e.target.value,
+                              });
+                            }}
                           >
                             {cat.data().name}
                           </option>
