@@ -8,6 +8,10 @@
 .bg-green-dark {
   color:white !important; 
 }
+.bg-lightgrey{
+  background-color:#eee !important;
+  background:#eee !important;
+}
 .bg-green-light *,
 .bg-green-light{
   color:white !important;
@@ -283,6 +287,9 @@ STANDARD UNIVERSAL LOADER
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 15px;
   justify-content: center;
+}
+.product-grid .fa{
+  font-size:25px;
 }
 .product-grid {
   border-radius: 20px;
@@ -800,3 +807,36 @@ padding:10px 0;
     display:none;
   }
 }
+.accordion-button{
+  padding:20px 30px;
+}
+.accordion-body{
+  padding:20px 0;
+}
+.accordion-button:hover{
+  cursor: pointer;
+}
+/*
+(e)=> {
+  if (newUser.privileges.indexOf("appointments")===-1 && e.target.checked) setNewUser( {
+      ...newUser,
+      privileges: [ ...newUser.privileges,
+      "appointments",
+      ],
+    }
+
+  );
+
+  else if (newUser.privileges.indexOf("appointments") !==-1 && !e.target.checked) {
+    let tmp=newUser.privileges;
+    tmp.splice(tmp.indexOf("appointments"), 1);
+
+    setNewUser( {
+        ...newUser, privileges: tmp
+      }
+
+    );
+  }
+}
+
+*/

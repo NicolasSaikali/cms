@@ -10,9 +10,9 @@ export default function OrderPage(props) {
   const [ordersLoading, setOrdersLoading] = useState(true);
   const fetch = () => {
     setOrdersLoading(true);
-    let tmp = [];
     if (condition === "all")
       firestore.collection("orders").onSnapshot((response) => {
+        let tmp = [];
         setOrders([]);
 
         response.forEach((order) => {
@@ -26,6 +26,8 @@ export default function OrderPage(props) {
         .collection("orders")
         .where("status", "==", condition)
         .onSnapshot((response) => {
+          let tmp = [];
+
           response.forEach((order) => {
             tmp.push(order);
           });

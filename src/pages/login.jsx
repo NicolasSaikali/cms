@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, createFactory } from "react";
+import { Redirect, Router } from "react-router-dom";
 export default function Login(props) {
   const [error, setError] = useState(null);
-
+  const [redirect, setRedirect] = useState(false);
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -18,7 +18,23 @@ export default function Login(props) {
       .then((response) => {
         console.log(response);
         if (response.empty) return false;
+        localStorage.setItem("user", response.data());
         return response.data();
+      });
+  };
+
+  const loginSubadmin = () => {
+    firestore
+      .collection("SubAdmins")
+      .where("email", "==", credentials.email)
+      .where("password", "==", credentials.password)
+      .get()
+      .then((response) => {
+        if (response.empty) setError("Wrong Credentials");
+        else {
+          localStorage.setItem("user", JSON.stringify(response.docs[0].data()));
+          props.setUser(response.docs[0].data());
+        }
       });
   };
   // useEffect(async () => {
@@ -34,6 +50,8 @@ export default function Login(props) {
     props.auth
       .signInWithEmailAndPassword(credentials.email, credentials.password)
       .then((e) => {
+        // var provider = new props.firebase.auth.GoogleAuthProvider();
+        localStorage.setItem("user", JSON.stringify(credentials));
         props.setUser(credentials);
       })
       .catch((error) => {
@@ -89,6 +107,14 @@ export default function Login(props) {
             }}
           >
             login
+          </button>
+          <button
+            className="btn bg-light color-dark w-100 text-uppercase  mt-3"
+            onClick={() => {
+              loginSubadmin();
+            }}
+          >
+            login as subadmin
           </button>
         </div>
       </div>

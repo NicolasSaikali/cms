@@ -36,6 +36,31 @@ export default function OrderGrid(props) {
     });
     setOrderProducts(tmp);
   };
+  const markDelivered = (id) => {
+    firestore.collection("orders").doc(props.object.id).set(
+      {
+        status: "delivered",
+      },
+      { merge: true }
+    );
+    emailjs
+      .sendForm(
+        "service_em2mvfc",
+        apiKey.TEMPLATE_ID,
+        document.getElementById(id),
+        apiKey.USER_ID
+      )
+      .then(
+        (result) => {
+          alert("Message Sent, We will get back to you shortly", result.text);
+          setAcceptLoading(false);
+        },
+        (error) => {
+          alert("An error occurred, Please try again", error.text);
+          setAcceptLoading(false);
+        }
+      );
+  };
   const acceptOrder = (id) => {
     setAcceptLoading(true);
     firestore.collection("orders").doc(props.object.id).set(
@@ -187,6 +212,40 @@ export default function OrderGrid(props) {
                         type="hidden"
                         name="message"
                         value="your order has been accepted"
+                      />
+                      <input
+                        type="hidden"
+                        name="email"
+                        value={props.object.data().email}
+                      />
+                    </form>
+                  </div>
+                )}
+                {props.object.data().status === "ongoing" && (
+                  <div className="pl-0 pl-md-3 text-underline toggle-animals color-dark d-inline-block">
+                    <a
+                      className="color-dark"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        markDelivered(`form_deliver_${props.object.id}`);
+                      }}
+                    >
+                      Mark as delivered
+                    </a>
+                    <form
+                      action=""
+                      className="d-none"
+                      id={`form_deliver_${props.object.id}`}
+                    >
+                      <input
+                        type="hidden"
+                        name="subject"
+                        value={`order #${props.object.id}`}
+                      />
+                      <input
+                        type="hidden"
+                        name="message"
+                        value="your order has been marked as delivered, if not please contact the store admin."
                       />
                       <input
                         type="hidden"

@@ -9,6 +9,7 @@ export default function AppProductPopup(props) {
     name: "",
     description: "",
     price: "",
+    stock_no: 50,
     images: [],
     category: "",
   });
@@ -66,6 +67,7 @@ export default function AppProductPopup(props) {
       images: product.images,
       description: product.description,
       category: product.category,
+      stock_no: product.stock_no,
     });
     setProduct({
       name: "",
@@ -134,6 +136,19 @@ export default function AppProductPopup(props) {
             }}
             onChange={(e) => {
               setProduct({ ...product, price: e.target.value });
+            }}
+          />
+          <input
+            type="number"
+            className={`form-control mb-3 ${
+              submitted && product.stock_no == "" && "required"
+            }`}
+            placeholder="Stock no"
+            onKeyDown={() => {
+              setSubmitted(false);
+            }}
+            onChange={(e) => {
+              setProduct({ ...product, stock_no: e.target.value });
             }}
           />
           <label htmlFor="images" className="mb-3 btn bg-green-dark text-light">

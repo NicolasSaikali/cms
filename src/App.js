@@ -18,6 +18,7 @@ import React, { useState, useEffect, createContext } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import OrderPage from "./pages/orders/page";
 import EmailForm from "./pages/orders/email_form";
+import Settings from "./pages/settings/settings";
 const firebaseConfig = {
   apiKey: "AIzaSyB9ZE0l4S6AlG0N4u5kWBU7kq_Sa-RexgQ",
   authDomain: "salocin.firebaseapp.com",
@@ -46,6 +47,8 @@ function App() {
   const [active_page, set_active_page] = useState("dashboard");
 
   useEffect(() => {
+    if (localStorage.getItem("user") !== null)
+      setUser(JSON.parse(localStorage.getItem("user")));
     firebase
       .firestore()
       .collection("messages")
@@ -90,118 +93,184 @@ function App() {
             <div className="brand"></div>
             <div className="h-100 d-flex flex-column justify-content-between">
               <ul className="d-flex flex-column">
-                <li
-                  className={`${active_page === "dashboard" ? "active" : ""}`}
-                  onClick={() => {
-                    set_active_page("dashboard");
-                  }}
-                >
-                  <Link to="/dashboard">
-                    <div className="d-flex">
-                      Dashboard
-                      <i className="fa fa-dashboard"></i>
-                    </div>
-                  </Link>
-                </li>
-                <li
-                  onClick={() => {
-                    set_active_page("products");
-                  }}
-                  className={`${active_page === "products" ? "active" : ""}`}
-                >
-                  <Link to="/products">
-                    <div className="d-flex">
-                      Products
-                      <i className="fa fa-shopping-bag"></i>
-                    </div>
-                  </Link>
-                </li>
-                <li
-                  onClick={() => {
-                    set_active_page("appointments");
-                  }}
-                  className={`${
-                    active_page === "appointments" ? "active" : ""
-                  }`}
-                >
-                  <Link to="/appointments">
-                    <div className="d-flex">
-                      Appointments
-                      <i className="fa fa-calendar"></i>
-                    </div>
-                  </Link>
-                </li>
-                <li
-                  className={`${active_page === "blog" ? "active" : ""}`}
-                  onClick={() => {
-                    set_active_page("blog");
-                  }}
-                >
-                  <Link to="/blog">
-                    <div className="d-flex">
-                      Blog
-                      <i className="fa fa-film"></i>
-                    </div>
-                  </Link>
-                </li>
-                <li
-                  className={`${active_page === "chat" ? "active" : ""}`}
-                  onClick={() => {
-                    set_active_page("chat");
-                  }}
-                >
-                  <Link to="/chat">
-                    <div className="d-flex">
-                      Chat
-                      <i className="fa fa-weixin"></i>
-                    </div>
-                  </Link>
-                </li>
-                <li
-                  className={`${
-                    active_page === "my-customers" ? "active" : ""
-                  }`}
-                  onClick={() => {
-                    set_active_page("my-customers");
-                  }}
-                >
-                  <Link to="/my-customers">
-                    <div className="d-flex">
-                      My Customers
-                      <i className="fa fa-users"></i>
-                    </div>
-                  </Link>
-                </li>
-                <li
-                  className={`${active_page === "orders" ? "active" : ""}`}
-                  onClick={() => {
-                    set_active_page("orders");
-                  }}
-                >
-                  <Link to="/orders">
-                    <div className="d-flex">
-                      Orders
-                      <i className="fa fa-truck"></i>
-                    </div>
-                  </Link>
-                </li>
+                {user.privileges === undefined ||
+                user.privileges.indexOf("dashboard") !== -1 ? (
+                  <li
+                    className={`${active_page === "dashboard" ? "active" : ""}`}
+                    onClick={() => {
+                      set_active_page("dashboard");
+                    }}
+                  >
+                    <Link to="/dashboard">
+                      <div className="d-flex">
+                        Dashboard
+                        <i className="fa fa-dashboard"></i>
+                      </div>
+                    </Link>
+                  </li>
+                ) : (
+                  <div></div>
+                )}
+                {user.privileges === undefined ||
+                user.privileges.indexOf("products") !== -1 ? (
+                  <li
+                    onClick={() => {
+                      set_active_page("products");
+                    }}
+                    className={`${active_page === "products" ? "active" : ""}`}
+                  >
+                    <Link to="/products">
+                      <div className="d-flex">
+                        Products
+                        <i className="fa fa-shopping-bag"></i>
+                      </div>
+                    </Link>
+                  </li>
+                ) : (
+                  <div></div>
+                )}
+                {user.privileges === undefined ||
+                user.privileges.indexOf("appointments") !== -1 ? (
+                  <li
+                    onClick={() => {
+                      set_active_page("appointments");
+                    }}
+                    className={`${
+                      active_page === "appointments" ? "active" : ""
+                    }`}
+                  >
+                    <Link to="/appointments">
+                      <div className="d-flex">
+                        Appointments
+                        <i className="fa fa-calendar"></i>
+                      </div>
+                    </Link>
+                  </li>
+                ) : (
+                  <div></div>
+                )}
+                {user.privileges === undefined ||
+                user.privileges.indexOf("blog") !== -1 ? (
+                  <li
+                    className={`${active_page === "blog" ? "active" : ""}`}
+                    onClick={() => {
+                      set_active_page("blog");
+                    }}
+                  >
+                    <Link to="/blog">
+                      <div className="d-flex">
+                        Blog
+                        <i className="fa fa-film"></i>
+                      </div>
+                    </Link>
+                  </li>
+                ) : (
+                  <div></div>
+                )}
+                {user.privileges === undefined ||
+                user.privileges.indexOf("chat") !== -1 ? (
+                  <li
+                    className={`${active_page === "chat" ? "active" : ""}`}
+                    onClick={() => {
+                      set_active_page("chat");
+                    }}
+                  >
+                    <Link to="/chat">
+                      <div className="d-flex">
+                        Chat
+                        <i className="fa fa-weixin"></i>
+                      </div>
+                    </Link>
+                  </li>
+                ) : (
+                  <div></div>
+                )}
+                {user.privileges === undefined ||
+                user.privileges.indexOf("dashboad") !== -1 ? (
+                  <li
+                    className={`${
+                      active_page === "my-customers" ? "active" : ""
+                    }`}
+                    onClick={() => {
+                      set_active_page("my-customers");
+                    }}
+                  >
+                    <Link to="/my-customers">
+                      <div className="d-flex">
+                        My Customers
+                        <i className="fa fa-users"></i>
+                      </div>
+                    </Link>
+                  </li>
+                ) : (
+                  <div></div>
+                )}
+                {user.privileges === undefined ||
+                user.privileges.indexOf("orders") !== -1 ? (
+                  <li
+                    className={`${active_page === "orders" ? "active" : ""}`}
+                    onClick={() => {
+                      set_active_page("orders");
+                    }}
+                  >
+                    <Link to="/orders">
+                      <div className="d-flex">
+                        Orders
+                        <i className="fa fa-truck"></i>
+                      </div>
+                    </Link>
+                  </li>
+                ) : (
+                  <div></div>
+                )}
               </ul>
               <div>
                 <hr />
                 <ul>
-                  <li
-                    onClick={() => {
-                      set_active_page("settings");
-                    }}
-                    className={`${active_page === "settings" ? "active" : ""}`}
-                  >
-                    <Link to="/settings">
+                  {user.privileges !== undefined ? (
+                    <li
+                      onClick={() => {
+                        localStorage.removeItem("user");
+                        setUser(null);
+                        firebase.auth().signOut();
+                      }}
+                    >
                       <div className="d-flex">
-                        Settings
-                        <i className="fa fa-cog"></i>
+                        Logout
+                        <i className="fa fa-sign-out"></i>
                       </div>
-                    </Link>
-                  </li>
+                    </li>
+                  ) : (
+                    <div>
+                      <li
+                        onClick={() => {
+                          set_active_page("settings");
+                        }}
+                        className={`${
+                          active_page === "settings" ? "active" : ""
+                        }`}
+                      >
+                        <Link to="/settings">
+                          <div className="d-flex">
+                            Settings
+                            <i className="fa fa-cog"></i>
+                          </div>
+                        </Link>
+                      </li>
+                      <li
+                        onClick={() => {
+                          localStorage.removeItem("user");
+                          setUser(null);
+                          firebase.auth().signOut();
+                        }}
+                      >
+                        <div className="d-flex">
+                          Logout
+                          <i className="fa fa-sign-out"></i>
+                        </div>
+                      </li>
+                    </div>
+                  )}
                 </ul>
               </div>
             </div>
@@ -234,6 +303,9 @@ function App() {
               <Route path="/email-form" component={EmailForm}>
                 <EmailForm functions={functions} firebase={firebase} />
               </Route>
+              <Route path="/settings" component={Settings}>
+                <Settings functions={functions} firebase={firebase} />
+              </Route>
             </Switch>
           </div>
         </div>
@@ -245,6 +317,7 @@ function App() {
       auth={auth}
       user={user}
       setUser={setUser}
+      firebase={firebase}
       firestore={firebase.firestore()}
     />
   );

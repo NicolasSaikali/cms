@@ -35,6 +35,7 @@ export default function ProductGrid(props) {
       price: currentObject.price,
       category: currentObject.category,
       images: currentObject.images,
+      stock_no: currentObject.stock_no,
     });
   };
   const delete_product = (id) => {
@@ -96,6 +97,11 @@ export default function ProductGrid(props) {
                   {props.object.description}
                 </div>
                 <div className="price pt-1">{props.object.price} L.L.</div>
+                <div className="d-block">
+                  <small className="text-secondary">
+                    {props.object.stock_no} units left
+                  </small>
+                </div>
               </div>
             </div>
           </div>
@@ -207,6 +213,18 @@ export default function ProductGrid(props) {
                   />
                   <span className="d-inline-block">L.L.</span>
                 </div>
+                <input
+                  type="number"
+                  placeholder="STOCK NO"
+                  className="stock_no pt-1 form-control my-1 d-inline-block position-relative float-left w-75"
+                  value={currentObject.stock_no}
+                  onChange={(e) => {
+                    setCurrentObject({
+                      ...currentObject,
+                      stock_no: e.target.value,
+                    });
+                  }}
+                />
               </div>
             </div>
           </div>
