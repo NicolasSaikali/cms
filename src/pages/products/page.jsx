@@ -35,12 +35,15 @@ export default function ProductPage(props) {
     });
 
     firestore.collection("products").onSnapshot((result) => {
+      set_products_loaded(false);
       set_products_loaded(true);
+      setProducts([]);
       let tmp = new Array();
       result.forEach((elt) => {
         tmp.push(elt);
       });
       setProducts(tmp);
+      set_products_loaded(true);
     });
   }, []);
   const addCategory = () => {

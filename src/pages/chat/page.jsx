@@ -65,14 +65,16 @@ export default function ChatPage(props) {
                       <div className="d-flex flex-column justify-content-around align-items-start">
                         <div className="text-bold">{chat.data().fromEmail}</div>
                         <div className="text-secondary lastMessage">
-                          {chat.data().data[chat.data().data.length - 1]
-                            .outstream === false
+                          {chat.data().length == 0
+                            ? "No messages yet"
+                            : chat.data().data[chat.data().data.length - 1]
+                                .outstream === false
                             ? "You : "
                             : ""}
-                          {
-                            chat.data().data[chat.data().data.length - 1]
-                              .content
-                          }
+                          {chat.data().length == 0
+                            ? ""
+                            : chat.data().data[chat.data().data.length - 1]
+                                .content}
                         </div>
                       </div>
                     </div>

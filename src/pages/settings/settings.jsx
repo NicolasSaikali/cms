@@ -1,5 +1,6 @@
 import { user } from "firebase-functions/lib/providers/auth";
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Settings(props) {
   const firebase = props.firebase;
@@ -25,6 +26,28 @@ export default function Settings(props) {
       });
       setSubAdmins(tmp);
     });
+  };
+
+  const deletePrivilege = (subadmin, privilege) => {
+    console.log(subadmin.id);
+    let tmp = subadmin.data().privileges;
+    let i = tmp.indexOf(privilege);
+    tmp.splice(i, 1);
+    console.log(tmp);
+    firestore
+      .collection("SubAdmin")
+      .doc(subadmin.id)
+      .set({
+        email: subadmin.data().email,
+        password: subadmin.data().password,
+        privileges: tmp,
+      })
+      .then((response) => {
+        toast("Subadmin editted successfully");
+      })
+      .catch((error) => {
+        toast("error editting privileges");
+      });
   };
 
   const handlePrivileges = (e) => {
@@ -112,8 +135,41 @@ export default function Settings(props) {
                           </h5>
                           <h6 className="color-dark mb-2">Privileges:</h6>
                           {subadmin.data().privileges.map((privilege) => (
-                            <div className="text-dark">{privilege}</div>
+                            <div>
+                              <div className="text-dark d-inline-block">
+                                {privilege}
+                              </div>
+                              <small class="d-inline-block pl-2">
+                                <a
+                                  href=""
+                                  className="text-danger text-underline"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    deletePrivilege(subadmin, privilege);
+                                  }}
+                                >
+                                  delete
+                                </a>
+                              </small>
+                            </div>
                           ))}
+                          <a
+                            href=""
+                            className="text-danger position-absolute p-1"
+                            style={{ right: 0, bottom: 0 }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              firestore
+                                .collection("SubAdmins")
+                                .doc(subadmin.id)
+                                .delete()
+                                .then((repsonse) => {
+                                  toast("subadmin deleted successfully");
+                                });
+                            }}
+                          >
+                            Delete SubAdmin
+                          </a>
                         </div>
                       </div>
                     ))}

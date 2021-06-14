@@ -53,7 +53,7 @@ export default function Blog(props) {
             </ul>
           </p>
         </div>
-        <div className="blog-wrapper">
+        <div className="">
           <div className="d-flex justify-content-between">
             <h3>Blog</h3>
 
@@ -66,12 +66,20 @@ export default function Blog(props) {
               Add Post
             </button>
           </div>
-          <div className="blogposts w-100 py-2">
-            <div className="wrap">
-              {posts.map((post) => (
-                <BlogGrid data={post} storage={storage} firestore={firestore} />
-              ))}
-            </div>{" "}
+          <div className="py-2">
+            <div className="container">
+              <div className="row justify-content-center">
+                {posts.map((post) => (
+                  <div className="col-lg-4">
+                    <BlogGrid
+                      data={post}
+                      storage={storage}
+                      firestore={firestore}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -19,6 +19,7 @@ import { ToastContainer, toast } from "react-toastify";
 import OrderPage from "./pages/orders/page";
 import EmailForm from "./pages/orders/email_form";
 import Settings from "./pages/settings/settings";
+import Forbidden from "./pages/forbidden";
 const firebaseConfig = {
   apiKey: "AIzaSyB9ZE0l4S6AlG0N4u5kWBU7kq_Sa-RexgQ",
   authDomain: "salocin.firebaseapp.com",
@@ -49,33 +50,34 @@ function App() {
   useEffect(() => {
     if (localStorage.getItem("user") !== null)
       setUser(JSON.parse(localStorage.getItem("user")));
-    firebase
-      .firestore()
-      .collection("messages")
-      .onSnapshot((response) => {
-        let tmp = new Array();
-        response.forEach((doc) => {
-          let observer = firebase
-            .firestore()
-            .collection("messages")
-            .doc(doc.id)
-            .onSnapshot(
-              (docSnapshot) => {
-                let lastMessage =
-                  docSnapshot.data().data[docSnapshot.data().data.length - 1];
-                toast(
-                  `new message from ${docSnapshot.data().fromEmail} : ${
-                    lastMessage.content
-                  }`
-                );
-                // ...
-              },
-              (err) => {
-                alert(`Encountered error: ${err}`);
-              }
-            );
+    if (user !== null)
+      firebase
+        .firestore()
+        .collection("messages")
+        .onSnapshot((response) => {
+          let tmp = new Array();
+          response.forEach((doc) => {
+            let observer = firebase
+              .firestore()
+              .collection("messages")
+              .doc(doc.id)
+              .onSnapshot(
+                (docSnapshot) => {
+                  let lastMessage =
+                    docSnapshot.data().data[docSnapshot.data().data.length - 1];
+                  toast(
+                    `new message from ${docSnapshot.data().fromEmail} : ${
+                      lastMessage.content
+                    }`
+                  );
+                  // ...
+                },
+                (err) => {
+                  alert(`Encountered error: ${err}`);
+                }
+              );
+          });
         });
-      });
   }, []);
   return user ? (
     <React.Fragment>
@@ -279,38 +281,105 @@ function App() {
         <div className={`active-component ${sidebar_active && "active"}`}>
           <div className="inner">
             <Switch>
-              <Route path="/dashboard" component={Dashboard}>
-                <Dashboard funtions={functions} firebase={firebase} />
-              </Route>
-              <Route path="/products" component={ProductPage}>
-                <ProductPage funtions={functions} firebase={firebase} />
-              </Route>
-              <Route path="/appointments" component={AppointmentPage}>
-                <AppointmentPage funtions={functions} firebase={firebase} />
-              </Route>
-              <Route path="/blog" component={Blog}>
-                <Blog funtions={functions} firebase={firebase} />
-              </Route>
-              <Route path="/chat" component={ChatPage}>
-                <ChatPage funtions={functions} firebase={firebase} />
-              </Route>
-              <Route path="/my-customers" component={MyCustomers}>
-                <MyCustomers funtions={functions} firebase={firebase} />
-              </Route>
-              <Route path="/orders" component={OrderPage}>
-                <OrderPage funtions={functions} firebase={firebase} />
-              </Route>
-              <Route path="/email-form" component={EmailForm}>
-                <EmailForm functions={functions} firebase={firebase} />
-              </Route>
-              <Route path="/settings" component={Settings}>
-                <Settings functions={functions} firebase={firebase} />
-              </Route>
+              {user.privileges === undefined ||
+              user.privileges.indexOf("dashboard") !== -1 ? (
+                <Route path="/dashboard" component={Dashboard}>
+                  <Dashboard funtions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/dashboard" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
+              {user.privileges === undefined ||
+              user.privileges.indexOf("products") !== -1 ? (
+                <Route path="/products" component={ProductPage}>
+                  <ProductPage funtions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/products" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
+              {user.privileges === undefined ||
+              user.privileges.indexOf("appointments") !== -1 ? (
+                <Route path="/appointments" component={AppointmentPage}>
+                  <AppointmentPage funtions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/appointments" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
+              {user.privileges === undefined ||
+              user.privileges.indexOf("blog") !== -1 ? (
+                <Route path="/blog" component={Blog}>
+                  <Blog funtions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/blog" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
+              {user.privileges === undefined ||
+              user.privileges.indexOf("chat") !== -1 ? (
+                <Route path="/chat" component={ChatPage}>
+                  <ChatPage funtions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/chat" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
+              {user.privileges === undefined ||
+              user.privileges.indexOf("my-customers") !== -1 ? (
+                <Route path="/my-customers" component={MyCustomers}>
+                  <MyCustomers funtions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/my-customers" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
+              {user.privileges === undefined ||
+              user.privileges.indexOf("orders") !== -1 ? (
+                <Route path="/orders" component={OrderPage}>
+                  <OrderPage funtions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/orders" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
+              {user.privileges === undefined ||
+              user.privileges.indexOf("orders") !== -1 ? (
+                <Route path="/email-form" component={EmailForm}>
+                  <EmailForm functions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/email" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
+              {user.privileges === undefined ? (
+                <Route path="/settings" component={Settings}>
+                  <Settings functions={functions} firebase={firebase} />
+                </Route>
+              ) : (
+                <Route path="/settings" component={Forbidden}>
+                  <Forbidden />
+                </Route>
+              )}
             </Switch>
           </div>
         </div>
       </Router>
-      <ToastContainer />
+      {user.privileges === undefined ||
+      user.privileges.indexOf("chats") !== -1 ? (
+        <ToastContainer />
+      ) : (
+        <div></div>
+      )}
     </React.Fragment>
   ) : (
     <Login

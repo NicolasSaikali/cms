@@ -208,6 +208,11 @@ h1,h2,h3,h4,h5,h6{
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 15px;
 }
+@media (max-width:1200px){
+  .dashboard .statistics{
+  grid-template-columns: repeat(1, 1fr);
+  }
+}
 .dashboard .statistics li {
   position: relative;
   padding-top: 100%;
@@ -669,11 +674,13 @@ STANDARD UNIVERSAL LOADER
   }
 }
 .blog-grid{
-  padding:30px;
+  padding:10px;
   border-radius:20px;
   margin:50px 0;
-  max-width:500px;
   background-color: #eee;
+}
+.blog-grid img{
+height:270px;
 }
 .blog-caption{
   font-size:18px;
@@ -816,27 +823,6 @@ padding:10px 0;
 .accordion-button:hover{
   cursor: pointer;
 }
-/*
-(e)=> {
-  if (newUser.privileges.indexOf("appointments")===-1 && e.target.checked) setNewUser( {
-      ...newUser,
-      privileges: [ ...newUser.privileges,
-      "appointments",
-      ],
-    }
-
-  );
-
-  else if (newUser.privileges.indexOf("appointments") !==-1 && !e.target.checked) {
-    let tmp=newUser.privileges;
-    tmp.splice(tmp.indexOf("appointments"), 1);
-
-    setNewUser( {
-        ...newUser, privileges: tmp
-      }
-
-    );
-  }
+.bold{
+  font-weight: 700 !important;
 }
-
-*/
